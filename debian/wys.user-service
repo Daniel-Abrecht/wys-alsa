@@ -7,10 +7,25 @@ StartLimitIntervalSec=0
 # We need PulseAudio
 Requires=pulseaudio.service
 
+# Don't run Haegtesse and Wys at the same time
+Conflicts=haegtesse.service
+
 [Service]
+
+# Execution will fail unless the WYS_CODEC and WYS_MODEM environment
+# variables are set to appropriate ALSA card names (or the --codec and
+# --modem command-line options are given).  This should be done
+# elsewhere, for example adding a wys.service.d/my-hardware.conf
+# containing the following:
+#
+#   [Service]
+#   Environment=WYS_CODEC=sgtl5000
+#   Environment=WYS_MODEM="SIMCom SIM7100"
+#
 ExecStart=/usr/bin/wys
+
 Restart=always
 RestartSec=500ms
 
 [Install]
-WantedBy=default.target
+RequiredBy=phone-voice-call-audio.target

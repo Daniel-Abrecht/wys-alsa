@@ -23,6 +23,7 @@
  */
 
 #include "wys-modem.h"
+#include "wys-audio.h"
 #include "util.h"
 
 #include <libmm-glib.h>
@@ -39,6 +40,8 @@
 
 struct wys_data
 {
+  /** PulseAudio interface */
+  WysAudio *audio;
   /** ID for the D-Bus watch */
   guint watch_id;
   /** ModemManager object proxy */
@@ -63,10 +66,12 @@ update_audio_count (struct wys_data *data,
   if (data->audio_count > 0 && old_count == 0)
     {
       g_debug ("Audio now present");
+      wys_audio_ensure_loopback (data->audio);
     }
   else if (data->audio_count == 0 && old_count > 0)
     {
       g_debug ("Audio now absent");
+      wys_audio_ensure_no_loopback (data->audio);
     }
 }
 
@@ -295,8 +300,12 @@ mm_vanished_cb (GDBusConnection *connection,
 
 
 static void
-set_up (struct wys_data *data)
+set_up (struct wys_data *data,
+        const gchar *codec,
+        const gchar *modem)
 {
+  data->audio = wys_audio_new (codec, modem);
+
   data->modems = g_hash_table_new_full (g_str_hash, g_str_equal,
                                         g_free, g_object_unref);
 
@@ -318,17 +327,19 @@ tear_down (struct wys_data *data)
   clear_dbus (data);
   g_bus_unwatch_name (data->watch_id);
   g_hash_table_unref (data->modems);
+  g_object_unref (G_OBJECT (data->audio));
 }
 
 
 static void
-run ()
+run (const gchar *codec,
+     const gchar *modem)
 {
   struct wys_data data;
   GMainLoop * loop;
 
   memset (&data, 0, sizeof (struct wys_data));
-  set_up (&data);
+  set_up (&data, codec, modem);
 
   loop = g_main_loop_new (NULL, FALSE);
   printf (APPLICATION_NAME " started\n");
@@ -338,6 +349,22 @@ run ()
   tear_down (&data);
 }
 
+static void
+ensure_alsa_card (      gchar **name,
+                  const gchar  *var,
+                  const gchar  *what)
+{
+  if (!*name)
+    {
+      *name = getenv (var);
+
+      if (!*name)
+        {
+          wys_error ("No %s specified", what);
+        }
+    }
+}
+
 
 int
 main (int argc, char **argv)
@@ -345,11 +372,15 @@ main (int argc, char **argv)
   GError *error = NULL;
   GOptionContext *context;
   gboolean ok;
+  gchar *codec = NULL;
+  gchar *modem = NULL;
 
   setlocale(LC_ALL, "");
 
   GOptionEntry options[] =
     {
+      { "codec", 'c', 0, G_OPTION_ARG_STRING, &codec, "Name of the codec's ALSA card", "NAME" },
+      { "modem", 'm', 0, G_OPTION_ARG_STRING, &modem, "Name of the modem's ALSA card", "NAME" },
       { NULL }
     };
 
@@ -361,7 +392,10 @@ main (int argc, char **argv)
       g_print ("Error parsing options: %s\n", error->message);
     }
 
-  run ();
+  ensure_alsa_card (&codec, "WYS_CODEC", "codec");
+  ensure_alsa_card (&modem, "WYS_MODEM", "modem");
+
+  run (codec, modem);
 
   return 0;
 }
