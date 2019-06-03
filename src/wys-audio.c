@@ -546,9 +546,6 @@ find_loopback_sink_input_list_cb (pa_context *ctx,
       return;
     }
 
-  g_debug ("%s Module data at %p has loopback data at %p",
-           __func__, module_data, module_data->loopback_data);
-
   if (info->owner_module != module_data->module_index)
     {
       g_debug ("Sink input %" PRIu32 " `%s' has"
@@ -586,14 +583,8 @@ find_sink_input (pa_context *ctx,
 {
   pa_operation *op;
 
-  g_debug ("%s Module data at %p has loopback data at %p",
-           __func__, module_data, module_data->loopback_data);
-
   op = pa_context_get_sink_input_info_list
     (ctx, find_loopback_sink_input_list_cb, module_data);
-
-  g_debug ("%s Module data at %p has loopback data at %p",
-           __func__, module_data, module_data->loopback_data);
 
   pa_operation_unref (op);
 }
@@ -632,8 +623,6 @@ find_loopback_get_module_cb (pa_context *ctx,
            " loopback module, finding sink input with matching module",
            info->index, loopback_data->source_alsa_card);
 
-  g_debug ("%s Module data at %p has loopback data at %p",
-           __func__, module_data, module_data->loopback_data);
   find_sink_input (ctx, module_data);
 }
 
