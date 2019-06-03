@@ -1142,10 +1142,10 @@ ensure_loopback (pa_context *ctx,
 void
 wys_audio_ensure_loopback (WysAudio *self)
 {
-  ensure_loopback (self->ctx, self->codec, self->modem,
-                   "Voice call audio (from mic)");
   ensure_loopback (self->ctx, self->modem, self->codec,
                    "Voice call audio (to speaker)");
+  ensure_loopback (self->ctx, self->codec, self->modem,
+                   "Voice call audio (from mic)");
 }
 
 
