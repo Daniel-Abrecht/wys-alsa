@@ -68,3 +68,9 @@ install_subdir (
   'machine-conf',
   install_dir : join_paths(datadir, app_name)
 )
+
+install_subdir (
+  'machine-check',
+  install_dir : join_paths(datadir, 'machine-check', app_name),
+  strip_directory : true
+)
