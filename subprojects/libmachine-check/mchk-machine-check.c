@@ -320,7 +320,7 @@ mchk_check_machine (const gchar  *param,
 
 
   g_debug ("Defaulting to pass");
-  if (*passed)
+  if (passed)
     {
       *passed = TRUE;
     }
