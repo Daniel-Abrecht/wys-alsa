@@ -1,0 +1,63 @@
+#!/bin/sh
+
+#exec 2>> /var/log/wys-connect
+
+capture="$1"
+playback="$2"
+
+options="-t 50000 -c 1 -r 48000"
+
+if [ -f /etc/wys-connect ]
+  then source /etc/wys-connect
+fi
+
+tryloop(){
+  c="$1"
+  p="$2"
+  echo -n "trying \"$c\" -> \"$p\""
+  ret=0
+  i=0
+  while [ "$i" -le 20 ]
+  do
+    i="$(expr $i + 1)"
+    out="$(alsaloop $options -C "$c" -P "$p" 2>&1)"
+    ret="$?"
+    [ "$out" != "Poll FD initialization failed." ] || ! sleep 0.3 || continue
+    break
+  done
+  res=0
+  if [ "$ret" = 1 ] && [ "$i" = 1 ]
+  then
+    echo ": failed"
+    res=1
+  fi
+  return "$res"
+}
+
+echo start "$capture" "$playback" >&2
+
+# try a few combinations
+for c in "side:$capture" "$capture" "sysdefault:$capture" "dsnoop:$capture"
+  do for p in "front:$playback" "$playback" "sysdefault:$playback" "dmix:$playback"
+    do tryloop "$c" "$p" || continue
+    echo
+    exit 0
+  done
+done &
+
+kill_descendants(){
+  ppid="$1"
+  for pid in $(ps -o pid= --ppid "$ppid")
+  do
+    kill_descendants "$pid"
+    kill -KILL "$pid"
+  done
+}
+
+stop(){
+  echo stop "$capture" "$playback" >&2
+  kill_descendants $$
+}
+
+trap stop EXIT INT TERM
+wait

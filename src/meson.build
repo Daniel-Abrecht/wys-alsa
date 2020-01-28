@@ -27,8 +27,6 @@ wys_deps = [
   dependency('gio-unix-2.0'),
   dependency('ModemManager'),
   dependency('mm-glib'),
-  dependency('libpulse'),
-  dependency('libpulse-mainloop-glib'),
 ]
 
 config_h = configure_file (

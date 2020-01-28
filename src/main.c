@@ -41,7 +41,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
-
+#include <stdlib.h>
 
 #define TTY_CHUNK_SIZE   320
 #define SAMPLE_LEN       2
@@ -421,10 +421,9 @@ setup_signals ()
                g_strerror (errno));                     \
     }
 
-  try_setup (HUP,  SIG_IGN);
-  try_setup (INT,  SIG_IGN);
+  atexit(terminate);
   try_setup (PIPE, SIG_IGN);
-  try_setup (TERM, terminate);
+  try_setup (CHLD, SIG_IGN);
 
 #undef try_setup
 }
