@@ -396,7 +396,7 @@ check_machine (const gchar *machine)
 
 
 static void
-terminate (int signal)
+terminate (void)
 {
   if (main_loop)
     {

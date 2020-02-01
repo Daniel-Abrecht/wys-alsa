@@ -67,6 +67,8 @@ set_property (GObject      *object,
 {
   WysAudio *self = WYS_AUDIO (object);
 
+  (void)self; // Currently unused, may become useful later
+
   switch (property_id) {
   case PROP_CODEC:
     self->codec = g_value_dup_string (value);
@@ -194,7 +196,6 @@ wys_destroy_alsaloop (struct alsaloop *aloop)
   if(aloop->alsaloop_pid <= 0)
     return;
   kill(aloop->alsaloop_pid, SIGTERM);
-  int status = 0;
   aloop->alsaloop_pid = -1;
 }
 
