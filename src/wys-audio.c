@@ -91,6 +91,8 @@ constructed (GObject *object)
   GObjectClass *parent_class = g_type_class_peek (G_TYPE_OBJECT);
   WysAudio *self = WYS_AUDIO (object);
 
+  (void)self; // Currently unused, may become useful later
+
   parent_class->constructed (object);
 }
 
