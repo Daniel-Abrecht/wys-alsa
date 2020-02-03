@@ -1,3 +1,12 @@
+wys-alsa (0.1.8) UNRELEASED; urgency=medium
+
+  * Fork of wys
+  * Remove pulseaudio
+  * Add sysvinit script
+  * Add wys-connect alsaloop wrapper script
+
+ -- Daniel Abrecht <deb@danielabrecht.ch>  Mon, 3 Feb 2020 23:17:11 +0000
+
 wys (0.1.7) amber-phone; urgency=medium
 
   * main: Fix interface name comparison check during interface removal

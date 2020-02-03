@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: wys
-Source: https://source.puri.sm/Librem5/wys
+Source: https://github.com/Daniel-Abrecht/wys-alsa/
 
 Files: *
 Copyright: 2018, 2019 Purism SPC

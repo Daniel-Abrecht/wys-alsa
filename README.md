@@ -1,6 +1,6 @@
 # Wys
-A daemon to bring up and take down PulseAudio loopbacks for phone call
-audio.
+Fork of wys (https://source.puri.sm/Librem5/wys), brings up and take down loopbacks for phone call audio.
+But this fork uses alsaloop to do so. 
 
 Wys was written to manage call audio in the Librem 5 phone with a
 Gemalto PLS8.  It may be useful for other systems.
@@ -10,11 +10,6 @@ Wys is pronounced "weece" to rhyme with "fleece".
 
 ## License
 Wys is licensed under the GPLv3+.
-
-
-## Dependencies
-
-    sudo apt-get install libpulse-dev libglib2.0-dev
 
 
 ## Building
