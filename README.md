@@ -1,4 +1,4 @@
-# Wys
+# Wys-alsa
 Fork of wys (https://source.puri.sm/Librem5/wys), brings up and take down loopbacks for phone call audio.
 But this fork uses alsaloop to do so. 
 
